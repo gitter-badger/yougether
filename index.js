@@ -5,21 +5,25 @@ var io = require('socket.io')(http)
 
 /*
 V1
-support and sync play and pause
-chat & log
+- support and sync play and pause
+- syncs when paused
+
 */
 io.on('connection', function(sock) {
+	var instruction = 0
 
-	console.log('user connected')
+	console.log('user connected ' +sock)
 
 	sock.on('paused', function(data) {
-		sock.broadcast.emit(data, data);
-		console.log('broadcasting '+data)
+		data.instruction = instruction
+		sock.broadcast.emit(data.action, data);
+		console.log('broadcasting '+ data.action + ' at '+data.time)
 	})
 
 	sock.on('playing', function(data) {
-		sock.broadcast.emit(data, data);
-		console.log('broadcasting '+data)
+		data.instruction = instruction
+		sock.broadcast.emit(data.action, data);
+		console.log('broadcasting '+ data.action + ' at '+data.time)
 	})
 
 })

@@ -7,7 +7,9 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var player;
 states = ['ended','playing','paused','buffering','video cued'] //+ -1 = unstarted
-other = false
+var instruction = 0
+
+console.log(userID)
 
 function onYouTubeIframeAPIReady() {
 	player = new YT.Player('player', {
@@ -22,21 +24,19 @@ function onYouTubeIframeAPIReady() {
 
 //outbout socket
 function onPlayerStateChange(event) {
-	if(other==false) {
-		socket.emit(states[event.data], states[event.data])
-	} else {
-		other = false
-	}
+		socket.emit(states[event.data], 
+		{'action': states[event.data],
+		 'time': player.getCurrentTime()
+		})
 }
 
 
 //inbound socket
-socket.on('playing', function() {
-	other = true
+socket.on('playing', function(data) {
 	player.playVideo()
 })
 
-socket.on('paused', function() {
-	other = true
-	player.pauseVideo()
+socket.on('paused', function(data) {
+		player.pauseVideo()
+		player.seekTo(data.time, true)
 })
