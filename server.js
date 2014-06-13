@@ -1,60 +1,34 @@
 var express = require('express')
 var app = express()
 var _ = require('underscore')
+var rooms = require('./rooms.js')
 
-var rooms = {}
 
 app.use('/static', express.static(__dirname + '/public'));
+
+
 app.get('/', function(req, res) {
 	res.sendfile('public/index-io.html')
 })
 
 
-app.get('/create_room/:roomName', function(req, res) {
-	//check if room exists
-	var roomName = req.params.roomName
+app.get('/watch/:roomID', function(req, res){
+	var roomID = req.params.roomID
 
-	//create room
-	if (_.indexOf(rooms, roomName) == -1) {
-		rooms[roomName] = {'nrUsers': 0}
-		res.locals = { 'roomURL': 'http://localhost:3000/room/'+roomName }
-	} else {
-		res.locals = { 
-		'err': 'room already exists',
-		'roomURL': 'http://localhost:3000/room/'+roomName, 
+	rooms.roomExists(roomID, function(err) {
+		if(err) {
+			res.render('room_err '+err)		
 		}
-	}
+	})
 
-	res.render('new_room')
-})
-
-
-app.get('/room/:roomName', function(req, res){
-	//check if room exist
-	var roomName = req.params.roomName
-
-	//add user to the room
-	if (rooms[roomName].nrUsers < 3) {
-		rooms[roomName].nrUsers=rooms[roomName].nrUsers+1
-		res.locals = { 
-		'roomName': roomName,
-		'nrUsers': rooms[roomName].nrUsers 
+	rooms.addUserToRoom(roomID, userName, function(err) {
+		if(err) {
+			res.render('room_err '+err)	
 		}
-		res.render('room')
-	} else {
-		res.locals = { 
-		'roomName': roomName,
-		'err': 'too many uusers!!' 
-	    }
-	    res.render('room_err')
-    }
+	})
 
-})
-
-
-//API
-app.get('/api/suggestions', function(res, req) {
-	console.log('API send suggestions')
+	res.locals = {'roomID': roomID} //+ data
+	res.render('room')
 })
 
 

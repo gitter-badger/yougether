@@ -1,17 +1,30 @@
 var http = require('./index.js').http
 var io = require('socket.io')(http)
 var _ = require('underscore')
-
-var maxUsers = 3
+var rooms = require('./rooms.js')
 
 io.on('connection', function(socket) {
 
-	var rooms = {}
+	/*
+	 * Operational
+	 *
+	 */
+
+	//this action is passed along as REST (page changes from the client-side)
+	socket.on('create room', function(data) {
+		//TODO: verify url
+		rooms.createRoom(url, function(url, err) {
+			if (err) {
+				socket.emit('update', err)
+			} else {
+				socket.emit('update', url)
+			}
+		})
+	})
 
 	socket.on('join', function(data) {
-		//check is room is available
+		//the verification comes from the express layer (need to verify again ?)
 
-		//if yes, join the room
 		socket.username = data.username
 		socket.room = data.room
 		socket.join('room')
@@ -21,11 +34,16 @@ io.on('connection', function(socket) {
 		console.log('we got a join!')
 	})
 
+	socket.on('suggestions', function(data) {
+		console.log('send suggestions back based on the room')
+	})
 
 
 
-
-	//controls
+	/*
+	 * Controls
+	 *
+	 */
 	socket.on('paused', function(data) {
 		data.instruction = instruction
 		socket.broadcast.emit(data.action, data);
@@ -37,6 +55,14 @@ io.on('connection', function(socket) {
 		socket.broadcast.emit(data.action, data);
 		console.log('broadcasting '+ data.action + ' at '+data.time)
 	})
+
+
+
+	/*
+	 * Chat
+	 *
+	 */
+
 
 })
 

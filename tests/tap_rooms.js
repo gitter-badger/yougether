@@ -1,0 +1,1 @@
+var rooms = require('../rooms.js')
