@@ -14,13 +14,21 @@ http://yougether.io/watch/<roomID>
 
 function createRoom(url, clbk) {
 	console.log('createRoom')
-	clbk()
+	roomID = null
+	clbk(roomID)
+}
+
+function removeRoom(roomID, clbk) {
+	var err = null
+	console.log('createRoom')
+	clbk(err)
 }
 
 function roomExists(roomID, clbk) {
 	console.log('roomExists')
-	clbk()
+	clbk(true)
 }
+
 
 function addUserToRoom(roomID, userName, clbk) {
 	console.log('addUserToRoom')
@@ -37,9 +45,16 @@ function changeUrlRoom(roomID, url, clbk) {
 	clbk()
 }
 
+function getInfoRoom(roomID, clbk) {
+	var roomInfo = null
+	console.log('get info room')
+	clbk(roomInfo)
+}
 
 exports.createRoom = createRoom
 exports.roomExists = roomExists
+exports.removeRoom = removeRoom
 exports.addUserToRoom = addUserToRoom
 exports.removeUserRoom = removeUserRoom
 exports.changeUrlRoom = changeUrlRoom
+exports.getInfoRoom = getInfoRoom
