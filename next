@@ -3,3 +3,7 @@
 3. implement frontend flow and pages
 4. implement server-side operational part
 -- create and join room working
+
+
+loose todos
+- create a more efficient and low chance hit iroom ID generator
