@@ -1,5 +1,5 @@
 var _ 	= 	require('underscore'),
-http 	=	require('http')
+utils	=	require('./utils.js')
 
 var db = {}
 
@@ -16,7 +16,8 @@ http://yougether.io/watch/<roomID>
 
 
 
-//----
+//---- sandbox
+
 
 //----
 
@@ -24,7 +25,7 @@ http://yougether.io/watch/<roomID>
 function createRoom(url, clbk) {
 	var roomID = null
 
-	isValidUrl(url, function(err) {
+	utils.isValidUrl(url, function(err) {
 		if(err) { 
 			clbk(err)
 		 } else {
@@ -39,41 +40,72 @@ function createRoom(url, clbk) {
 	})
 }
 
-
 function removeRoom(roomID, clbk) {
-	var err = null
-	console.log('createRoom')
-	clbk(err)
+	roomExists(roomExists, function(exists){
+		if(exists) {
+			delete db.roomID
+			clbk(null)
+		} else {
+			clbk('[err]:  room does not exist')
+		}
+	})
 }
 
 function roomExists(roomID, clbk) {
-	console.log('roomExists')
-	clbk(true)
+	clbk(_.has(db, roomID))
 }
 
 
 function addUserToRoom(roomID, userName, clbk) {
-	console.log('addUserToRoom')
-	var err = null
-	clbk(err)
+	roomExists(roomID, function(bol) {
+		if(bol) {
+			db[roomID].users.push(userName)
+		} else {
+			clbk('[err]: room does not exist')
+		}
+	})
 }
 
 function removeUserRoom(roomID, userName, clbk) {
-	console.log('removeUserRoom')
-	var err = null
-	clbk(err)
+	roomExists(roomID, function(exists) {
+		if(exists) {
+			var roomObject = db[roomID] 
+			var userEntry = roomObject.indexOf(userName)
+			if(userEntry == -1) {
+				clbk('[err]: user is not in the room')
+				return	
+			} else {
+				roomObject.splice(userEntry, 1)
+			}
+		} else {
+			clbk('[err]: room does not exist')
+		}
+	})
+
+
 }
 
-function changeUrlRoom(roomID, url, clbk) {
-	console.log('changeUrlRoom')	
-	var err = null
-	clbk(err)
+//not tested
+function changeVideoIDRoom(roomID, url, clbk) {
+	roomExists(roomID, function(exists) {
+		if(exists) {
+			var roomObject = db[roomID] 
+			var currID = roomObject.currentVideoID
+			roomObject.history.push(currID)
+			roomObject.currentVideoID = url
+			clbk(null)
+		} else {
+			clbk('[err]: room does not exist')
+		}
+	})
 }
 
 function getInfoRoom(roomID, clbk) {
-	var roomInfo = {}
-	console.log('get info room')
-	clbk(roomInfo)
+	if(typeof db[roomID] == 'undefined') {
+		clbk(null)
+	} else {
+		clbk(db[roomID])
+	}
 }
 
 
@@ -88,61 +120,11 @@ function generateRoomID() {
 	return Math.random().toString(36).slice(12)
 }
 
-/*
- check url validity:
-
-http://youtube.com/<videoID>
-www.youtube.com/<videoID>
-youtube.com/<videoID>
-- lower and upper case
-- if videoID is valid and exists
- */
-function isValidUrl(url, clbk) {
-	url = url.toLowerCase()
-	var urlSplt = url.split('/')
-	var videoID = '/'+_.last(urlSplt)
-
-	if(_.contains(urlSplt, 'youtube.com') || _.contains(urlSplt, 'www.youtube.com')) {
-		var begin = url.replace('youtube.com','').replace(videoID,'')
-		if(!(begin== 'www.' || begin== 'http://www.' || begin== '')) {
-			clbk('invalid url')
-			return
-		}
-	} else {
-		clbk('invalid url')
-		return
-	}
-
-	//check if youtube video exists
-	var options = {
-		method: 'HEAD',
-		host: 'www.youtube.com',
-		port: 80,
-		path: videoID
-	}
-	var req = http.request(options, function(res) {
-		if(res.statusCode=='200'){
-			clbk(null)
-		} else
-		clbk('[youtube] invalid url')
-
-		req.on('error', function(e) {
-			clbk(e)
-		})
-	})
-	req.shouldKeepAlive = false
-	req.end()
-}
-
-
-
-
-
 
 exports.createRoom = createRoom
 exports.roomExists = roomExists
 exports.removeRoom = removeRoom
 exports.addUserToRoom = addUserToRoom
 exports.removeUserRoom = removeUserRoom
-exports.changeUrlRoom = changeUrlRoom
+exports.changeVideoIDRoom = changeVideoIDRoom
 exports.getInfoRoom = getInfoRoom

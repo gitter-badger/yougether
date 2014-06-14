@@ -5,5 +5,5 @@
 -- create and join room working
 
 
-loose todos
-- create a more efficient and low chance hit iroom ID generator
+loose TODOs
+- decide and implement wht to do when video is not available (now, is creating a room with the invalid video!)
