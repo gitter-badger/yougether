@@ -89,11 +89,15 @@ function removeUserRoom(roomID, userName, clbk) {
 function changeVideoIDRoom(roomID, url, clbk) {
 	roomExists(roomID, function(exists) {
 		if(exists) {
-			var roomObject = db[roomID] 
-			var currID = roomObject.currentVideoID
-			roomObject.history.push(currID)
-			roomObject.currentVideoID = url
-			clbk(null)
+			utils.isValidUrl(url, function(err) {
+				if(err == null) {
+					var roomObject = db[roomID] 
+					var currID = roomObject.currentVideoID
+					roomObject.history.push(currID)
+					roomObject.currentVideoID = url
+					clbk(null)
+				} else { clbk(err) }
+			})
 		} else {
 			clbk('[err]: room does not exist')
 		}

@@ -113,29 +113,33 @@ test('removeUserRoom', function(t){
 })
 
 
-/*
+
 test('changeVideoIDRoom', function(t) {
 	var url = 'www.youtube.com/watch?v=2XH5_qafR8k'
 	var url2 = 'www.youtube.com/watch?v=koJIscC8sAE'
 	var wrongUrl = 'dadda'
 
 	rooms.changeVideoIDRoom('randomID', url, function(msg) {
-		t.equal(trim(msg), errMsg, 'room does exist, err should not be null')
+		t.equal(trim(msg), errMsg, 'room does exist, err should be send')
 	})
 
 	rooms.createRoom(url, function(roomID) {
-		rooms.changeVideoIDRoom(roomID, wrongUrl, function(err) {
-			t.equal(err, null, 'wrong url, err should not be null')
+
+		rooms.changeVideoIDRoom(roomID, wrongUrl, function(msg) {
+			t.equal(trim(msg), errMsg, 'wrong url, err should not be null')
 		})
 
-		rooms.changeVideoIDRoom(roomID, url2, function(err) {
-			t.notEqual(err, null, 'err should be null')
+		rooms.changeVideoIDRoom(roomID, url2, function(msg) {
+			t.equal(null, msg, 'err should be null')
 			
 			rooms.getInfoRoom(roomID, function(data) {
-				t.equal(data.currentUrl, url2, 'urls should be the same')
+				t.equal(data.currentVideoID, url2, 'ids should be the same')
 			})
 		})		
 	})
 	t.end()
 })
-*/
+
+
+//if error -> trim
+//if not error: null
