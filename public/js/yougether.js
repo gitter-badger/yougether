@@ -1,14 +1,17 @@
 var socket = io()
 
-//loads youtube iframe async
-var tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
 var player;
 states = ['ended','playing','paused','buffering','video cued']; //+ -1 = unstarted
 var user = Math.random()
+
+
+function initPlayer() {
+	//loads youtube iframe async
+	var tag = document.createElement('script');
+	tag.src = "https://www.youtube.com/iframe_api";
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
 
 function onYouTubeIframeAPIReady() {
 	player = new YT.Player('player', {
@@ -21,7 +24,7 @@ function onYouTubeIframeAPIReady() {
 	})
 }
 
-//outbout socket
+//player actions
 function onPlayerStateChange(event) {
 	socket.emit(states[event.data], 
 		{'action': states[event.data],
@@ -32,13 +35,45 @@ function onPlayerStateChange(event) {
 
 
 
-socket.emit('join', 
-	{ 'username': user,
-	  'room': 'room1'
-	})
+/*
+ *  outbound socks
+ *
+ */
+
+//operational
+function createRoomIO(url) {
+	console.log('requesting new room with '+url)
+	socket.emit('create room', url)
+}
 
 
-//inbound socket
+/*
+  inbound socks
+
+*/
+
+//operational
+socket.on('create room res', function(data) {
+	var msg	
+	if (isErr(data)) msg = data
+	else msg = "room created "+data
+
+	var div = document.getElementById('operationalDiv');
+	div.innerHTML = div.innerHTML + msg + '<br>';
+})
+
+socket.on('enter room res', function(data) {
+	if (data.err) alert('err')
+	var msg = data.res
+
+	var div = document.getElementById('operationalDiv');
+	div.innerHTML = div.innerHTML + msg;
+})
+
+
+
+
+//player
 socket.on('playing', function(data) {
 	console.log('received playing //'+' me: '+user+' other: '+data.user)
 	if(data.user != user) {
@@ -54,6 +89,7 @@ socket.on('paused', function(data) {
 	}
 })
 
-socket.on('update', function(data) {
-	alert(data)
-})
+
+function isErr(msg) {
+	return (msg.split(':')[0] == ['[err]'])
+}

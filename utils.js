@@ -54,4 +54,9 @@ function isValidUrl(url, clbk) {
 }
 
 
+function isErr(msg) {
+	return (msg.split(':')[0] == ['[err]'])
+}
+
 exports.isValidUrl = isValidUrl
+exports.isErr = isErr
