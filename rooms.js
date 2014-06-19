@@ -57,8 +57,8 @@ function roomExists(roomID, clbk) {
 
 
 function addUserToRoom(roomID, userName, clbk) {
-	roomExists(roomID, function(bol) {
-		if(bol) {
+	roomExists(roomID, function(ok) {
+		if(ok) {
 			db[roomID].users.push(userName)
 		} else {
 			clbk('[err]: room does not exist')

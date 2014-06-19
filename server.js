@@ -20,23 +20,17 @@ app.get('/watch/:roomID', function(req, res){
 		if (!exists) {
 			res.locals = {'err': 'room does not exist'}
 			res.render('room_err')
-			return
+		} else {
+			//not adding a new user yet	
+			rooms.getInfoRoom(roomID, function(data) {
+				res.locals = {
+					'roomID': roomID,
+					'videoID': data.currentVideoID
+				}
+				res.render('room')	
+			})	
 		}
-		
-		var userName = 'randomUser'
-		rooms.addUserToRoom(roomID, userName, function(msg) {
-			if(utils.isErr(msg)) {
-				res.locals = {'err': msg}
-				res.render('room_err')
-				return
-			}
-				res.locals = {'roomID': roomID} //+ data
-				res.render('room')
-			})
-		})
 	})
-
-
-
+})
 
 exports.endpoint = app

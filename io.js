@@ -10,15 +10,11 @@ io.on('connection', function(socket) {
 	 *
 	 */
 	socket.on('create room', function(url) {
+		console.log('event: create room')
 		rooms.createRoom(url, function(err) {
 			socket.emit('create room res', err)
 		})
 	})
-
-
-
-
-
 
 	/*
 	 * Controls
@@ -35,8 +31,6 @@ io.on('connection', function(socket) {
 		socket.broadcast.emit(data.action, data);
 		console.log('broadcasting '+ data.action + ' at '+data.time)
 	})
-
-
 
 	/*
 	 * Chat

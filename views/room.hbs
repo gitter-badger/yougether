@@ -5,15 +5,17 @@
  </head>
  <body>
 
-<h1>{{roomName}}<h1>
-<h3>nr users: {{nrUsers}}</h3>
+<h1>{{roomID}}<h1>
 
-<!--
-  <center><div id="player"></div></center>
--->
 
-<h3>{{err}}</h3>
+<div id="videoID">{{videoID}}</div>
+
+<center><div id="player"></div></center>
+
 
  </body>
-   <script src="static/js/yougether.js"></script>
+   <script src="/static/js/yougether.js"></script>
+	<script>	
+		initPlayer('{{videoID}}')
+	</script>
 </html>

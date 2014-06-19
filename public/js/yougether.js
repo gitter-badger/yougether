@@ -4,7 +4,6 @@ var player;
 states = ['ended','playing','paused','buffering','video cued']; //+ -1 = unstarted
 var user = Math.random()
 
-
 function initPlayer() {
 	//loads youtube iframe async
 	var tag = document.createElement('script');
@@ -14,10 +13,12 @@ function initPlayer() {
 }
 
 function onYouTubeIframeAPIReady() {
+	videoID = document.getElementById("videoID").innerHTML
+	console.log('www.youtube.com/'+videoID)
 	player = new YT.Player('player', {
 		height: '300',
 		width: '300',
-		videoId: 'M7lc1UVf-VE',
+		videoId: 'www.youtube.com/'+videoID,
 		events: {
 			'onStateChange': onPlayerStateChange
 		}
@@ -56,7 +57,7 @@ function createRoomIO(url) {
 socket.on('create room res', function(data) {
 	var msg	
 	if (isErr(data)) msg = data
-	else msg = "room created "+data
+	else msg = "http://localhost:3000/watch/"+data
 
 	var div = document.getElementById('operationalDiv');
 	div.innerHTML = div.innerHTML + msg + '<br>';
