@@ -4,8 +4,9 @@ var player;
 states = ['ended','playing','paused','buffering','video cued']; //+ -1 = unstarted
 var user = Math.random()
 
-function initPlayer() {
+function initPlayer(videoID) {
 	//loads youtube iframe async
+	currentVideoID = videoID
 	var tag = document.createElement('script');
 	tag.src = "https://www.youtube.com/iframe_api";
 	var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -13,12 +14,12 @@ function initPlayer() {
 }
 
 function onYouTubeIframeAPIReady() {
-	videoID = document.getElementById("videoID").innerHTML
-	console.log('www.youtube.com/'+videoID)
+	//videoID = document.getElementById("videoID").innerHTML
+	//console.log('www.youtube.com/'+videoID)
 	player = new YT.Player('player', {
 		height: '300',
 		width: '300',
-		videoId: 'www.youtube.com/'+videoID,
+		videoId: currentVideoID,
 		events: {
 			'onStateChange': onPlayerStateChange
 		}

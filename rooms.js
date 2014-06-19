@@ -18,9 +18,7 @@ http://yougether.io/watch/<roomID>
 
 //---- sandbox
 
-
 //----
-
 
 function createRoom(url, clbk) {
 	var roomID = null
@@ -32,7 +30,7 @@ function createRoom(url, clbk) {
 			var roomID = generateRoomID()
 			db[roomID] = {
 				'users': [],
-				'currentVideoID': _.last(url.split('/')),
+				'currentVideoID': _.last(url.split('=')),
 				'history': []
 			}		
 			clbk(roomID)
