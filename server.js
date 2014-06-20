@@ -9,7 +9,7 @@ app.use('/static', express.static(__dirname + '/public'));
 
 
 app.get('/', function(req, res) {
-	res.sendfile('public/index-io.html')
+	res.sendfile('public/index.html')
 })
 
 
