@@ -1,8 +1,12 @@
 var socket = io()
 
 var player;
-states = ['ended','playing','paused','buffering','video cued']; //+ -1 = unstarted
-var user = Math.random()
+var states = ['end','play','pause','buffer','video cue']; //+ -1 = unstarted
+
+var currentState = 'starting';
+var roomID;
+var user;
+
 
 function initPlayer(videoID) {
 	//loads youtube iframe async
@@ -14,8 +18,6 @@ function initPlayer(videoID) {
 }
 
 function onYouTubeIframeAPIReady() {
-	//videoID = document.getElementById("videoID").innerHTML
-	//console.log('www.youtube.com/'+videoID)
 	player = new YT.Player('player', {
 		height: '480',
 		width: '853',
@@ -26,14 +28,41 @@ function onYouTubeIframeAPIReady() {
 	})
 }
 
+
 //player actions
 function onPlayerStateChange(event) {
-	socket.emit(states[event.data], 
-		{'action': states[event.data],
-		 'time': player.getCurrentTime(),
-		 'user': user
-	})
+	console.log(states[event.data].toUpperCase())
+
+	//state buffering
+	if(states[event.data] == 'buffer' && currentState == 'starting') {
+		data = {'action': states[event.data],
+			 	'time': player.getCurrentTime()
+			 }
+		console.log('emits buffering...')
+		currentState = 'waiting for users'
+		socket.emit('buffering', data)
+	}
+
+	//state waiting for users
+	if(currentState == 'waiting for users' && states[event.data] == 'play') {
+		player.pauseVideo()
+		console.log('waiting for users...')
+		//disable commands, while syncing (player.controls(0))
+		//show div on top of iframe with 'syncing....'
+		socket.emit('waiting', {'user': user, 'roomID': roomID})
+	}
+
+	//state running
+	if(states[event.data] == 'play' || states[event.data] == 'pause') {
+		data = {'action': states[event.data],
+			 	'time': player.getCurrentTime()
+			 }
+		console.log('emits '+states[event.data])
+		currentState = states[event.data]
+		socket.emit(states[event.data], data)
+	}
 }
+
 
 /*
  *  outbound socks
@@ -51,6 +80,25 @@ function createRoomIO(url) {
   inbound socks
 
 */
+
+//player
+socket.on('play', function(data) {
+	if (currentState != data.action) player.playVideo()
+})
+
+socket.on('pause', function(data) {
+	if (currentState != data.action) {
+		player.pauseVideo()
+		player.seekTo(data.time, true)
+	}
+})
+
+socket.on('ready', function(data) {
+	console.log('everyone\'s ready!')
+	currentState = 'play'
+	player.playVideo()
+})
+
 
 //operational
 socket.on('create room res', function(data) {
@@ -75,25 +123,7 @@ socket.on('enter room res', function(data) {
 })
 
 
-
-
-//player
-socket.on('playing', function(data) {
-	console.log('received playing //'+' me: '+user+' other: '+data.user)
-	if(data.user != user) {
-		player.playVideo()
-	}
-})
-
-socket.on('paused', function(data) {
-	console.log('received pause //'+'me: '+user+' other: '+data.user)
-	if(data.user != user) {
-		player.pauseVideo()
-		player.seekTo(data.time, true)
-	}
-})
-
-
+//utils
 function isErr(msg) {
 	return (msg.split(':')[0] == ['[err]'])
 }

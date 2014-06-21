@@ -111,8 +111,9 @@ function getInfoRoom(roomID, clbk) {
 }
 
 
-
-
+function getAll() {
+	return db
+}
 
 /*
 	private and auxiliar fuctions
@@ -130,3 +131,4 @@ exports.addUserToRoom = addUserToRoom
 exports.removeUserRoom = removeUserRoom
 exports.changeVideoIDRoom = changeVideoIDRoom
 exports.getInfoRoom = getInfoRoom
+exports.getAll = getAll
