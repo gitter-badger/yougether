@@ -8,6 +8,20 @@ var roomsOperational = {}
 
 io.on('connection', function(socket) {
 
+
+    //testing
+
+    socket.on('room', function(data) {
+        console.log(data)
+        socket.join(data.room)
+        socket.to(data.room).emit(data.name+" joined the room "+data.room)
+    })
+
+
+
+    //----
+
+
 	/*
 	 * Operational
 	 *
@@ -46,11 +60,6 @@ io.on('connection', function(socket) {
 		}
 	})
 })
-
-	/*
-	 * Chat
-	 *
-	 */
 
 
 })

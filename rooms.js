@@ -15,11 +15,6 @@ http://yougether.io/watch/<roomID>
 */
 
 
-
-//---- sandbox
-
-//----
-
 function createRoom(url, clbk) {
 	var roomID = null
 

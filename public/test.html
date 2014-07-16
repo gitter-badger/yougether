@@ -1,0 +1,22 @@
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="/static/assets/js/bootstrap.min.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
+
+
+
+
+<h2>test</h2>
+
+
+<script type="text/javascript">
+var socket = io()
+
+var roomName = "room1"
+var name = "name1"
+socket.emit('room', {room: roomName, name: name})
+
+socket.on('msg', functio(data) {
+    console.log(msg)
+})
+</script>
