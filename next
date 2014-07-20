@@ -1,9 +1,0 @@
-1. tests room
-2. implement room
-3. implement frontend flow and pages
-4. implement server-side operational part
--- create and join room working
-
-
-loose TODOs
-- decide and implement wht to do when video is not available (now, is creating a room with the invalid video!)

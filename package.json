@@ -1,0 +1,29 @@
+{
+  "name": "yougether_app",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "express": "~4.6.1",
+    "socket.io": "~1.0.6",
+    "hbs": "~2.7.0",
+    "tape": "~2.13.4",
+    "underscore": "~1.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "nodejs tests/tape_all.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gpestana/yougether.git"
+  },
+  "author": "gpestana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gpestana/yougether/issues"
+  }
+}
