@@ -124,7 +124,7 @@ socket.on('enter room res', function(data) {
 
 
 
-socket.on('msg room', function(data) {
+socket.on('msg', function(data) {
   console.log(data)
 })
 

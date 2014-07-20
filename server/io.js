@@ -3,23 +3,49 @@ var io = require('socket.io')(http)
 var _ = require('underscore')
 
 io.on('connection', function(socket) {
-  console.log("someone is connected")
-  console.log("current rooms: ")
-  console.log(io.sockets.adapter.rooms)
   
-  socket.on('join room', function(data) {
-    console.log("user entered in room "+data)
-    var adapter = io.sockets.adapter
-    console.log(adapter)
+  var msg = "this is a msg"
+ 
+  infoSock(socket)
+ 
+  socket.on('join room', function(roomName) {
+    console.log("user joined room")
+    socket.join(roomName, function() {
+      infoSock(socket)
+      console.log(socket.adapter)
+    }) 
   })
 
-  //receive and broadcast msg from and to room
+
+  socket.on('leave room', function(roomName) {
+    console.log("user left the room")
+    socket.leave(roomName, function() {
+      infoSock(socket)
+      console.log(socket.adapter)
+    })
+  })
+
+
+  socket.on('msg all', function() {
+    infoSock(socket)
+    console.log("emitting msg all")
+    io.emit('msg', msg)
+  })
+
   socket.on('msg room', function(room) {
-    console.log("msg to room")
-    socket.to(room).emit('msg room', room)
+    infoSock(socket)
+    console.log("emitting msg room")
+    io.to(room).emit('msg', msg)
   })
-
-
 })
+
+
+
+
+function infoSock(socket) {
+  console.log("client id: "+socket.id)
+  console.log("rooms: "+socket.rooms) 
+  console.log("--")
+}
 
 exports.io = io
