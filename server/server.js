@@ -13,8 +13,16 @@ app.get('/test', function(req, res) {
 })
 
 app.get('/watch/:roomID', function(req, res){
-	var userName = 'user'+Math.round(Math.random()*(50-0))
-	res.render('room')	
+	var roomID = req.params.roomID
+  //check if room exists
+  //if not:
+  //res.render('room_error')
+
+  //if exists:
+  var userName = 'user'+Math.round(Math.random()*(50-0))
+  var videoID = 'fetch videoID'
+  //send userName, roomID and videoID to be rendered by handlebars  
+  res.render('room')	
 })
 
 

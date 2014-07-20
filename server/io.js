@@ -1,51 +1,61 @@
-var http = require('../index.js').http
-var io = require('socket.io')(http)
-var _ = require('underscore')
+var http  = require('../index.js').http,
+io        = require('socket.io')(http),
+ _        = require('underscore'),
+utils     = require('../lib/utils.js'),
+rooms     = require('../lib/rooms.js')
 
 io.on('connection', function(socket) {
-  
-  var msg = "this is a msg"
  
-  infoSock(socket)
+  socket.on('create room', function(url) {
+    //#todo: verify url
+    //if url is not valid:
+    //socket.emit('create room res', null) return
  
-  socket.on('join room', function(roomName) {
-    console.log("user joined room")
-    socket.join(roomName, function() {
-      infoSock(socket)
-      console.log(socket.adapter)
-    }) 
+    //if url is valid:
+    var roomID = utils.generateID()
+    socket.emit('create room res', roomID)
+    rooms.addRoom(roomID, url)
   })
 
 
-  socket.on('leave room', function(roomName) {
-    console.log("user left the room")
-    socket.leave(roomName, function() {
-      infoSock(socket)
-      console.log(socket.adapter)
-    })
+  socket.on('join room', function(roomID) {
+    //if room exists is verified in server.js when user accesses page
+    socket.join(roomID)
   })
 
 
-  socket.on('msg all', function() {
-    infoSock(socket)
-    console.log("emitting msg all")
-    io.emit('msg', msg)
+  socket.on('disconnect', function() {
+    //when user disconnects, if room is empty, remove it!
+    console.log(socket.adapter.rooms)
+    //if room empty
+    //remove from io.sockets.adapter.rooms
+    //remove from urls
   })
 
-  socket.on('msg room', function(room) {
-    infoSock(socket)
-    console.log("emitting msg room")
-    io.to(room).emit('msg', msg)
+
+  socket.on('protocol', function(msg) {
+    //do lots of things
   })
+
+
+  //debug
+  socket.on('info', function() {
+    console.log(io.sockets.adapter)
+    console.log(urls)
+  })
+
 })
 
 
-
-
+//debug
 function infoSock(socket) {
   console.log("client id: "+socket.id)
   console.log("rooms: "+socket.rooms) 
+  console.log('general state')
+  console.log(io.sockets.adapter)
   console.log("--")
+
 }
+
 
 exports.io = io

@@ -1,5 +1,5 @@
 var test	= require('tape'),
-utils 		= require('../utils.js')
+utils 		= require('../lib/utils.js')
 
 //error recognizer from msgs
 var errMsg = '[err]' 

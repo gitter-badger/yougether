@@ -65,23 +65,10 @@ function onPlayerStateChange(event) {
 
 
 /*
- *  outbound socks
+ * Protocol
  *
  */
 
-//operational
-function createRoomIO(url) {
-	console.log('requesting new room with '+url)
-	socket.emit('create room', url)
-}
-
-
-/*
-  inbound socks
-
-*/
-
-//player
 socket.on('play', function(data) {
 	if (currentState != data.action) player.playVideo()
 })
@@ -100,21 +87,24 @@ socket.on('ready', function(data) {
 })
 
 
-//operational
-socket.on('create room res', function(data) {
-	var div = document.getElementById('operationalDiv');
-	var msg	
-	if (isErr(data)) {
-		msg = data
-		div.innerHTML = div.innerHTML + 'error: '+data+'<br>'
-	} else {
-		msg = "http://localhost:3000/watch/"+data
-		div.innerHTML = div.innerHTML + 
-			'<a href='+msg+' target ="_blank">Room with id '+data+'</a> <br>';}
+/*
+ * Operational
+ *
+ */
 
+socket.on('create room res', function(res) {
+	var div = document.getElementById('operationalDiv');
+	if (res == 'null') {
+		div.innerHTML = div.innerHTML + 'URL invalid. Try again!' + '<br>'
+    return
+	}
+	var roomURL = "http://localhost:3000/watch/"+res
+	div.innerHTML = div.innerHTML + 
+		'<a href='+roomURL+' target ="_blank">Room with id '+res+'</a> <br>'
 })
 
-socket.on('enter room res', function(data) {
+
+socket.on('join room res', function(data) {
 	if (data.err) alert('err')
 	var msg = data.res
 
@@ -123,13 +113,6 @@ socket.on('enter room res', function(data) {
 })
 
 
-
-socket.on('msg', function(data) {
-  console.log(data)
-})
-
-
-//utils
-function isErr(msg) {
-	return (msg.split(':')[0] == ['[err]'])
+function createRoomIO(url) {
+	socket.emit('create room', url)
 }
