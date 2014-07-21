@@ -4,6 +4,7 @@ io        = require('socket.io')(http),
 utils     = require('../lib/utils.js'),
 rooms     = require('../lib/rooms.js')
 
+
 io.on('connection', function(socket) {
  
   socket.on('create room', function(url) {
@@ -21,6 +22,7 @@ io.on('connection', function(socket) {
   socket.on('join room', function(roomID) {
     //if room exists is verified in server.js when user accesses page
     socket.join(roomID)
+    io.sockets.adapter.rooms[roomID].push({url: 'www.lol.pt'})
   })
 
 
@@ -37,11 +39,8 @@ io.on('connection', function(socket) {
     //do lots of things
   })
 
-
-  //debug
   socket.on('info', function() {
     console.log(io.sockets.adapter)
-    console.log(urls)
   })
 
 })
