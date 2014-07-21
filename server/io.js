@@ -2,7 +2,7 @@ var http  = require('../index.js').http,
 io        = require('socket.io')(http),
  _        = require('underscore'),
 utils     = require('../lib/utils.js'),
-rooms     = require('../lib/rooms.js')
+hotel     = require('../lib/hotel.js')(io.sockets.adapter)
 
 
 io.on('connection', function(socket) {
@@ -41,6 +41,7 @@ io.on('connection', function(socket) {
 
   socket.on('info', function() {
     console.log(io.sockets.adapter)
+    console.log(hotel.listRooms())
   })
 
 })
