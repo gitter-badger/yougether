@@ -21,10 +21,7 @@ io.on('connection', function(socket) {
 
 
   socket.on('join room', function(roomID) {
-    //if room exists is verified in server.js when user accesses page
-    console.log(hotel.roomExists(roomID))
     socket.join(roomID)
-    
   })
 
   socket.on('leave room', function(roomID) {
