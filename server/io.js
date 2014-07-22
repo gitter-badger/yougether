@@ -2,8 +2,9 @@ var http  = require('../index.js').http,
 io        = require('socket.io')(http),
  _        = require('underscore'),
 utils     = require('../lib/utils.js'),
-hotel     = require('../lib/hotel.js')(io.sockets.adapter)
+Hotel     = require('../lib/hotel.js')
 
+var hotel = new Hotel(io.sockets.adapter)
 
 io.on('connection', function(socket) {
  
@@ -21,8 +22,14 @@ io.on('connection', function(socket) {
 
   socket.on('join room', function(roomID) {
     //if room exists is verified in server.js when user accesses page
+    console.log(hotel.roomExists(roomID))
     socket.join(roomID)
-    io.sockets.adapter.rooms[roomID].push({url: 'www.lol.pt'})
+    
+  })
+
+  socket.on('leave room', function(roomID) {
+    socket.leave(roomID) 
+    hotel.delEmptyRoom(roomID)
   })
 
 
@@ -41,7 +48,6 @@ io.on('connection', function(socket) {
 
   socket.on('info', function() {
     console.log(io.sockets.adapter)
-    console.log(hotel.listRooms())
   })
 
 })
