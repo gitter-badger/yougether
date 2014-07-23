@@ -16,7 +16,7 @@ io.on('connection', function(socket) {
     //if url is valid:
     var roomID = utils.generateID()
     socket.emit('create room res', roomID)
-    rooms.addRoom(roomID, url)
+    rooms.addPropertyToRoom(roomID, url)
   })
 
 
@@ -32,23 +32,24 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function() {
     //when user disconnects, if room is empty, remove it!
-    console.log(socket.adapter.rooms)
-    //if room empty
-    //remove from io.sockets.adapter.rooms
-    //remove from urls
+    hotel.getRoomsUser(socket.id, function(rooms) {
+      rooms.forEach(function(roomID) {
+        hotel.delEmptyRoom(roomID)
+      })
+    })
   })
 
 
-  socket.on('protocol', function(msg) {
-    socket.emit('echo', msg)
-  })
+
+
+ /*
+  * testing and debugging purposes
+  */
 
   socket.on('info', function() {
-    console.log(io.sockets.adapter)
+    hotel.listRooms(console.log)
   })
 
-
-  //use only for testing purposes.
   socket.on('test interface', function() {
     socket.emit('test res', hotel.listRooms())
   })
