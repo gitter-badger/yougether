@@ -40,25 +40,19 @@ io.on('connection', function(socket) {
 
 
   socket.on('protocol', function(msg) {
-    //do lots of things
+    socket.emit('echo', msg)
   })
 
   socket.on('info', function() {
     console.log(io.sockets.adapter)
   })
 
+
+  //use only for testing purposes.
+  socket.on('test interface', function() {
+    socket.emit('test res', hotel.listRooms())
+  })
+
 })
-
-
-//debug
-function infoSock(socket) {
-  console.log("client id: "+socket.id)
-  console.log("rooms: "+socket.rooms) 
-  console.log('general state')
-  console.log(io.sockets.adapter)
-  console.log("--")
-
-}
-
 
 exports.io = io

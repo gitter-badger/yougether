@@ -1,11 +1,6 @@
 var test	= require('tape'),
 utils 		= require('../lib/utils.js')
 
-//error recognizer from msgs
-var errMsg = '[err]' 
-function trim(msg) {
-	return msg.split(':')[0]
-}
 test('url validity', function(t) {
 	var wrong1 = 'asdasd'
 	var wrong2 = 'www.youtube.com/'
