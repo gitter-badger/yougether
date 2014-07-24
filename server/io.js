@@ -2,7 +2,7 @@ var http  = require('../index.js').http,
 io        = require('socket.io')(http),
  _        = require('underscore'),
 utils     = require('../lib/utils.js'),
-Hotel     = require('../lib/hotel.js')
+Hotel     = require('socket.io-hotel')
 
 var hotel = new Hotel(io.sockets.adapter)
 
