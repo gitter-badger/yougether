@@ -1,0 +1,2 @@
+all the modules used by the app are publish on npm and thus tested
+here, the glue between all modules is tested

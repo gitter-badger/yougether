@@ -1,7 +1,8 @@
 var express	= require('express'),
-app		 	= express(),
-_ 			= require('underscore'),
-utils		= require('../lib/utils.js')
+app		 	    = express(),
+_ 			    = require('underscore'),
+rooms       = require('./io.js'),
+utils		    = require('../lib/utils.js')
 
 app.get('/', function(req, res) {
   res.sendfile('public/index.html')
@@ -14,15 +15,18 @@ app.get('/test', function(req, res) {
 
 app.get('/watch/:roomID', function(req, res){
 	var roomID = req.params.roomID
-  //check if room exists
-  //if not:
-  //res.render('room_error')
-
-  //if exists:
-  var userName = 'user'+Math.round(Math.random()*(50-0))
-  var videoID = 'fetch videoID'
-  //send userName, roomID and videoID to be rendered by handlebars  
-  res.render('room')	
+  
+  rooms.existRoom(roomID, function(exists) {
+    if(exists) {
+      var userName = 'user'+Math.round(Math.random()*(50-0))
+      var videoUrl = rooms.getPropertiesRoom(roomID)
+      res.render('room', {
+        userName: userName,
+        roomID: roomID,
+        videoUrl: videoUrl
+      })
+    }	
+  })
 })
 
 

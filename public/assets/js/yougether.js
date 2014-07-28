@@ -8,16 +8,20 @@ var roomID;
 var user;
 
 
-function initPlayer(videoID) {
+function initPlayer(videoUrl) {
 	//loads youtube iframe async
-	currentVideoID = videoID
-	var tag = document.createElement('script');
+  var trimUrl = videoUrl.split('/')
+  console.log(videoUrl)
+  console.log(trimUrl)
+	currentVideoID = trimUrl[trimUrl.lenght - 1]
+  var tag = document.createElement('script');
 	tag.src = "https://www.youtube.com/iframe_api";
 	var firstScriptTag = document.getElementsByTagName('script')[0];
 	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
 function onYouTubeIframeAPIReady() {
+  console.log(currentVideoID)
 	player = new YT.Player('player', {
 		height: '480',
 		width: '853',
@@ -94,13 +98,14 @@ socket.on('ready', function(data) {
 
 socket.on('create room res', function(res) {
 	var div = document.getElementById('operationalDiv');
-	if (res == 'null') {
+	if (res) {
+  	var roomURL = "http://localhost:3000/watch/"+res
+	  div.innerHTML = div.innerHTML + 
+		'<a href='+roomURL+' target ="_blank">Room with id '+res+'</a> <br>'
+  } else {
 		div.innerHTML = div.innerHTML + 'URL invalid. Try again!' + '<br>'
     return
 	}
-	var roomURL = "http://localhost:3000/watch/"+res
-	div.innerHTML = div.innerHTML + 
-		'<a href='+roomURL+' target ="_blank">Room with id '+res+'</a> <br>'
 })
 
 

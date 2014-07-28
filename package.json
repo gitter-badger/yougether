@@ -10,9 +10,10 @@
     "express": "~4.6.1",
     "hbs": "~2.7.0",
     "socket.io": "~1.0.6",
-    "socket.io-hotel": "^0.1.0",
+    "socket.io-hotel": "~0.2.1",
     "tape": "~2.13.4",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "youtube-validator": "~1.0.0"
   },
   "devDependencies": {
     "socket.io-client": "^1.0.6",
