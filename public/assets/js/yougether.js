@@ -1,7 +1,5 @@
 var socket = io()
 var states = ['end','play','pause','buffer','cue']; //+ -1 = unstarted
-var roomID;
-var user;
 
 function initPlayer(videoUrl) {
   currentVideoID = videoUrl.split('?v=')[1]
@@ -25,14 +23,22 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerStateChange(event) {
   var state = states[event.data].toUpperCase()
-  socket.emit('state', state, roomID)
+  if(state == 'BUFFER') {state = 'PAUSE'}
+  socket.emit('state', state, roomID, player.getCurrentTime())
 }
 
-socket.on('state', function(state) {
+
+/*
+ * protocol
+ *
+ */
+
+socket.on('state', function(state, time) {
   if(state == 'PLAY') {
     player.playVideo()
   } 
   else if(state == 'PAUSE') {
+    player.seekTo(time)
     player.pauseVideo()
   }
   else if(state == 'STOP') {
@@ -42,7 +48,28 @@ socket.on('state', function(state) {
 
 
 /*
- * Operational
+ * chat
+ *
+ */
+
+function chat(msg) {
+  console.log(msg)
+  socket.emit('chat', roomID, user, msg)
+  var div = document.getElementById('chat')
+  div.innerHTML = div.innerHTML +
+    user+': '+msg+'<br>'
+}
+
+socket.on('chat', function(user, msg){
+  var div = document.getElementById('chat')
+  div.innerHTML = div.innerHTML +
+    user+': '+msg+'<br>'  
+})
+
+
+
+/*
+ * operational
  *
  */
 

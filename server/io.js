@@ -9,6 +9,11 @@ var hotel = new Hotel(io.sockets.adapter)
 
 io.on('connection', function(socket) {
 
+ /*
+  * operational
+  *
+  */
+
    socket.on('create room', function(url) {
     youtubeValidator.validateUrl(url, function(res, err) {
       if(err) {
@@ -26,11 +31,11 @@ io.on('connection', function(socket) {
     console.log(socket.id+' joining '+ roomID)
     socket.join(roomID)
 
-    //check if video started already
+    //check if video has already started
     hotel.getPropertiesRoom(roomID, function(props) {
       if(props['state']!='new') {
         console.log('session has started, ask someone for sync')
-      }
+     }
     })
   })
   socket.on('leave room', function(roomID) {
@@ -44,23 +49,31 @@ io.on('connection', function(socket) {
   })
 
  /*
-  * Protocol
+  * protocol
   *
   */
-  
-  var states = ['end', 'play', 'pause', 'buffer', 'cue']
  
-  socket.on('state', function(state, roomID) {
+  socket.on('state', function(state, roomID, time) {
     hotel.getPropertiesRoom(roomID, function(props){
       if(props['state']!=state) {
         hotel.setPropertyRoom(roomID, 'state', state, function() {
-          socket.in(roomID).emit('state', state)
-          console.log('change '+roomID+' to '+state)
+          socket.in(roomID).emit('state', state, time)
         })
       }
     })
   }) 
+
+ /*
+  * chat
+  *
+  */
   
+  socket.on('chat', function(roomID, user, msg) {
+    socket.in(roomID).emit('chat', user, msg)  
+})    
+
+
+
 })
 
 
