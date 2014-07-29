@@ -16,7 +16,7 @@
   <div id="init">					
   <h1>Create a room</h1>
 
-  <input type="text" class="form-control" id="url" placeholder="Enter the youtube link"> <button onclick="createRoomIO(document.getElementById('url').value)" class="btn btn-warning btn-lg" >Create room</button>
+  <input type="text" class="form-control" id="url" placeholder="Enter the youtube link"> <button onclick="socket.emit('create room', document.getElementById('url').value)" class="btn btn-warning btn-lg" >Create room</button>
 
  <div id = "operationalDiv"><h3>Operational Msgs</h3></div>
   </div>

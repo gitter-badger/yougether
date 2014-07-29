@@ -19,13 +19,18 @@ app.get('/watch/:roomID', function(req, res){
   rooms.existRoom(roomID, function(exists) {
     if(exists) {
       var userName = 'user'+Math.round(Math.random()*(50-0))
-      var videoUrl = rooms.getPropertiesRoom(roomID)
-      res.render('room', {
-        userName: userName,
-        roomID: roomID,
-        videoUrl: videoUrl
+      
+      rooms.getPropertiesRoom(roomID, function(props) {
+         res.render('room', {
+          userName: userName,
+          roomID: roomID,
+          videoUrl: props['currentUrl']
+        })
       })
-    }	
+      return
+    } else {
+      res.render('room_err')
+      }	
   })
 })
 

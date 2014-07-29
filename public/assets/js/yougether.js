@@ -1,19 +1,10 @@
 var socket = io()
-
-var player;
-var states = ['end','play','pause','buffer','video cue']; //+ -1 = unstarted
-
-var currentState = 'starting';
+var states = ['end','play','pause','buffer','cue']; //+ -1 = unstarted
 var roomID;
 var user;
 
-
 function initPlayer(videoUrl) {
-	//loads youtube iframe async
-  var trimUrl = videoUrl.split('/')
-  console.log(videoUrl)
-  console.log(trimUrl)
-	currentVideoID = trimUrl[trimUrl.lenght - 1]
+  currentVideoID = videoUrl.split('?v=')[1]
   var tag = document.createElement('script');
 	tag.src = "https://www.youtube.com/iframe_api";
 	var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -21,10 +12,9 @@ function initPlayer(videoUrl) {
 }
 
 function onYouTubeIframeAPIReady() {
-  console.log(currentVideoID)
 	player = new YT.Player('player', {
-		height: '480',
-		width: '853',
+		height: '300',
+		width: '600',
 		videoId: currentVideoID,
 		events: {
 			'onStateChange': onPlayerStateChange
@@ -33,61 +23,21 @@ function onYouTubeIframeAPIReady() {
 }
 
 
-//player actions
 function onPlayerStateChange(event) {
-	console.log(states[event.data].toUpperCase())
-
-	//state buffering
-	if(states[event.data] == 'buffer' && currentState == 'starting') {
-		data = {'action': states[event.data],
-			 	'time': player.getCurrentTime()
-			 }
-		console.log('emits buffering...')
-		currentState = 'waiting for users'
-		socket.emit('buffering', data)
-	}
-
-	//state waiting for users
-	if(currentState == 'waiting for users' && states[event.data] == 'play') {
-		player.pauseVideo()
-		console.log('waiting for users...')
-		//disable commands, while syncing (player.controls(0))
-		//show div on top of iframe with 'syncing....'
-		socket.emit('waiting', {'user': user, 'roomID': roomID})
-	}
-
-	//state running
-	if(states[event.data] == 'play' || states[event.data] == 'pause') {
-		data = {'action': states[event.data],
-			 	'time': player.getCurrentTime()
-			 }
-		console.log('emits '+states[event.data])
-		currentState = states[event.data]
-		socket.emit(states[event.data], data)
-	}
+  var state = states[event.data].toUpperCase()
+  socket.emit('state', state, roomID)
 }
 
-
-/*
- * Protocol
- *
- */
-
-socket.on('play', function(data) {
-	if (currentState != data.action) player.playVideo()
-})
-
-socket.on('pause', function(data) {
-	if (currentState != data.action) {
-		player.pauseVideo()
-		player.seekTo(data.time, true)
-	}
-})
-
-socket.on('ready', function(data) {
-	console.log('everyone\'s ready!')
-	currentState = 'play'
-	player.playVideo()
+socket.on('state', function(state) {
+  if(state == 'PLAY') {
+    player.playVideo()
+  } 
+  else if(state == 'PAUSE') {
+    player.pauseVideo()
+  }
+  else if(state == 'STOP') {
+    player.stopVide()
+  }
 })
 
 
@@ -108,16 +58,8 @@ socket.on('create room res', function(res) {
 	}
 })
 
-
 socket.on('join room res', function(data) {
 	if (data.err) alert('err')
-	var msg = data.res
-
 	var div = document.getElementById('operationalDiv');
-	div.innerHTML = div.innerHTML + msg;
+	div.innerHTML = div.innerHTML + data.res;
 })
-
-
-function createRoomIO(url) {
-	socket.emit('create room', url)
-}

@@ -8,9 +8,8 @@ Hotel             = require('socket.io-hotel')
 var hotel = new Hotel(io.sockets.adapter)
 
 io.on('connection', function(socket) {
- 
-  socket.on('create room', function(url) {
 
+   socket.on('create room', function(url) {
     youtubeValidator.validateUrl(url, function(res, err) {
       if(err) {
         socket.emit('create room res', null) 
@@ -19,30 +18,49 @@ io.on('connection', function(socket) {
       var roomID = socket.id //room takes the id of its creator     
       socket.emit('create room res', socket.id)
       hotel.setPropertyRoom(roomID, 'currentUrl', url, function(){})
+      hotel.setPropertyRoom(roomID, 'state', 'new', function(){})
     })
   })
 
   socket.on('join room', function(roomID) {
     console.log(socket.id+' joining '+ roomID)
     socket.join(roomID)
-  })
 
-  socket.on('leave room', function(roomID) {
-    socket.leave(roomID) 
-    hotel.delEmptyRoom(roomID) //if room is empty, delete it
-  })
-
-  socket.on('disconnect', function() {
-    console.log('user '+socket.id+' disconnected')
-    socket.rooms.forEach(function(room) {
-        hotel.delEmptyRoom(room, console.log)
+    //check if video started already
+    hotel.getPropertiesRoom(roomID, function(props) {
+      if(props['state']!='new') {
+        console.log('session has started, ask someone for sync')
+      }
     })
   })
-
+  socket.on('leave room', function(roomID) {
+    socket.leave(roomID) 
+  })
+  socket.on('disconnect', function() {
+    console.log('user '+socket.id+' disconnected')
+  })
   socket.on('info', function() {
     hotel.listRooms(console.log)
-    console.log(io.sockets.adapter)
   })
+
+ /*
+  * Protocol
+  *
+  */
+  
+  var states = ['end', 'play', 'pause', 'buffer', 'cue']
+ 
+  socket.on('state', function(state, roomID) {
+    hotel.getPropertiesRoom(roomID, function(props){
+      if(props['state']!=state) {
+        hotel.setPropertyRoom(roomID, 'state', state, function() {
+          socket.in(roomID).emit('state', state)
+          console.log('change '+roomID+' to '+state)
+        })
+      }
+    })
+  }) 
+  
 })
 
 
@@ -53,10 +71,9 @@ function existRoom(roomID, clbk) {
   })
 }
 
-function getPropertiesRoom(roomID) {
+function getPropertiesRoom(roomID, clbk) {
   hotel.getPropertiesRoom(roomID, function(props) {
-    console.log(roomID+': '+props)
-    return props
+    clbk(props)
   })
 }
 
