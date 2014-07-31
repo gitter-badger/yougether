@@ -1,5 +1,7 @@
 var socket = io()
-var states = ['end','play','pause','buffer','cue']; //+ -1 = unstarted
+var states = ['end','play','pause','buffer','cue']; //-1 == 'unstarted'
+
+console.log('startin...')
 
 function initPlayer(videoUrl) {
   currentVideoID = videoUrl.split('?v=')[1]
@@ -11,10 +13,13 @@ function initPlayer(videoUrl) {
 
 function onYouTubeIframeAPIReady() {
 	player = new YT.Player('player', {
-		height: '300',
-		width: '600',
+		height: window.screen.availHeight*.75,
+		width: window.screen.availWidth*.75,
 		videoId: currentVideoID,
-		events: {
+	  playerVars: {
+        html5: 1
+      },
+  	events: {
 			'onStateChange': onPlayerStateChange
 		}
 	})
@@ -22,9 +27,11 @@ function onYouTubeIframeAPIReady() {
 
 
 function onPlayerStateChange(event) {
+  if(event.data != -1) { //-1 == unstarted (ignore)
   var state = states[event.data].toUpperCase()
-  if(state == 'BUFFER') {state = 'PAUSE'}
-  socket.emit('state', state, roomID, player.getCurrentTime())
+    if(state == 'BUFFER') {state = 'PAUSE'}
+    socket.emit('state', state, roomID, player.getCurrentTime())
+  }
 }
 
 

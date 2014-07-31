@@ -54,6 +54,7 @@ io.on('connection', function(socket) {
   */
  
   socket.on('state', function(state, roomID, time) {
+    console.log(roomID + ': '+state) 
     hotel.getPropertiesRoom(roomID, function(props){
       if(props['state']!=state) {
         hotel.setPropertyRoom(roomID, 'state', state, function() {

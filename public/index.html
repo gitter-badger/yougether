@@ -9,20 +9,24 @@
     <link rel="shortcut icon" href="assets/img/favicon.png">
   </head>
 
+  <link rel="stylesheet" href="/static/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/assets/css/yougether.css">
+  
   <body>
 
-  <div id="room"></div>
 
-  <div id="init">					
-  <h1>Create a room</h1>
+<div class = "container">
 
-  <input type="text" class="form-control" id="url" placeholder="Enter the youtube link"> <button onclick="socket.emit('create room', document.getElementById('url').value)" class="btn btn-warning btn-lg" >Create room</button>
+<h1>Create a room</h1>
+<br><br><br>
+<input type="text" class="form-control" id="url" placeholder="Enter the youtube link"> <br> <button onclick="socket.emit('create room', document.getElementById('url').value)" class="btn btn-lg" >Create room</button>
+<br><br>
+ <div id = "operationalDiv"></div>
 
- <div id = "operationalDiv"><h3>Operational Msgs</h3></div>
-  </div>
+</div>
     
 
+  </body>
   <script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
   <script src="/static/assets/js/yougether.js"></script>
-  </body>
 </html>
