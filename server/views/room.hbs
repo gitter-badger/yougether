@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="assets/img/favicon.png">
+  </head>
+
+  <body>
+	
+
+	<center><div id="player"></div></center>
+  <h3>Welcome to {{roomID}}<h3>
+  <p>you are {{userName}} and are viewing {{videoUrl}}</p>
+
+  <div id='chat'></div>
+  <input type="text" class="form-control" id="chat_msg" placeholder="text..."> <button onclick="chat(document.getElementById('chat_msg').value)" class="btn btn-warning btn-lg" >send</button>
+ 
+  
+
+  <script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
+  <script src="/static/assets/js/yougether.js"></script>
+  <script>	
+		initPlayer('{{videoUrl}}')
+    user = '{{userName}}'
+    roomID = '{{roomID}}'
+
+    socket.emit('join room', '{{roomID}}')
+	</script>
+  
+  </body>
+</html>

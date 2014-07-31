@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="assets/img/favicon.png">
+  </head>
+
+  <body>
+
+  <div id="room"></div>
+
+  <div id="init">					
+  <h1>Create a room</h1>
+
+  <input type="text" class="form-control" id="url" placeholder="Enter the youtube link"> <button onclick="socket.emit('create room', document.getElementById('url').value)" class="btn btn-warning btn-lg" >Create room</button>
+
+ <div id = "operationalDiv"><h3>Operational Msgs</h3></div>
+  </div>
+    
+
+  <script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
+  <script src="/static/assets/js/yougether.js"></script>
+  </body>
+</html>
