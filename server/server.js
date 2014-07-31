@@ -18,18 +18,24 @@ app.get('/watch/:roomID', function(req, res){
   
   rooms.existRoom(roomID, function(exists) {
     if(exists) {
+      rooms.nrUsers(roomID, function(nrUsers) {
+        if (nrUsers>2) {
+          res.render('room_err',{msg:'the room is full'})
+          return
+        }
+      })
+
       var userName = 'user'+Math.round(Math.random()*(50-0))
-      
       rooms.getPropertiesRoom(roomID, function(props) {
-         res.render('room', {
+        res.render('room', {
           userName: userName,
           roomID: roomID,
           videoUrl: props['currentUrl']
-        })
+         })
       })
       return
     } else {
-      res.render('room_err')
+      res.render('room_err', {msg: 'the room does not exist'})
       }	
   })
 })

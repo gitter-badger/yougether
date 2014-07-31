@@ -90,6 +90,13 @@ function getPropertiesRoom(roomID, clbk) {
   })
 }
 
+function nrUsers(roomID, clbk) {
+  hotel.getUsersRoom(roomID, function(users){
+    clbk(_.keys(users).length)
+  })
+}
+
+exports.nrUsers           = nrUsers
 exports.getPropertiesRoom = getPropertiesRoom,
 exports.existRoom         = existRoom
 exports.io                = io
