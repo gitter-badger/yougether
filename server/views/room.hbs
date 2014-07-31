@@ -16,36 +16,49 @@
 
 <div class = "wrapper">
 <div id="slim-header"></div>
+<div id = "header"><h4><b>yougether.io</b></h4></div>
 
-<div class="row">
+ <div id="player-container">
+ <div id="theater-background">
+ <center><div id="player"></div></center>
+ </div>
+ </div>  
 
-<div class="col-md-9">
-  <div id="player-container">
-  <div id="theater-background">
-  <div id="player"></div>
-  </div>
-  </div>  
-</div>
 
-<div class="col-md-3">
+<div class = "row">
 <div id='chat'>
-<div id = "chat-text">.</div>
-<input type="text"  id="chat_msg" placeholder="text..."> 
-<button onclick="chat(document.getElementById('chat_msg').value)" class="btn btn-lg" >send</button>
+<div class="col-md-4">
+<div id = "online">
+<b>online</b><br>
+{{userName}} (you)
 </div>
 </div>
+
+<div class="col-md-8">
+<div id = "form">
+</div>
+<div id = "chat-text"></div>
+<input type="text"  id="chat_msg" placeholder="Press enter"> 
+</div>
+</div>
+
+</div>
+
+
 
 </div>
 </div>
 
   </body>
   <script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>  
   <script src="/static/assets/js/yougether.js"></script>
-  <script>	
+<script>	
 		initPlayer('{{videoUrl}}')
     user = '{{userName}}'
     roomID = '{{roomID}}'
 
     socket.emit('join room', '{{roomID}}')
+
 	</script>
 </html>

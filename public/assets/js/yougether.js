@@ -1,8 +1,6 @@
 var socket = io()
 var states = ['end','play','pause','buffer','cue']; //-1 == 'unstarted'
 
-console.log('startin...')
-
 function initPlayer(videoUrl) {
   currentVideoID = videoUrl.split('?v=')[1]
   var tag = document.createElement('script');
@@ -13,8 +11,8 @@ function initPlayer(videoUrl) {
 
 function onYouTubeIframeAPIReady() {
 	player = new YT.Player('player', {
-		height: window.screen.availHeight*.75,
-		width: window.screen.availWidth*.75,
+		height: window.screen.availHeight*.55,
+		width: window.screen.availWidth*.55,
 		videoId: currentVideoID,
 	  playerVars: {
         html5: 1
@@ -62,13 +60,13 @@ socket.on('state', function(state, time) {
 function chat(msg) {
   console.log(msg)
   socket.emit('chat', roomID, user, msg)
-  var div = document.getElementById('chat')
+  var div = document.getElementById('chat-text')
   div.innerHTML = div.innerHTML +
     user+': '+msg+'<br>'
 }
 
 socket.on('chat', function(user, msg){
-  var div = document.getElementById('chat')
+  var div = document.getElementById('chat-text')
   div.innerHTML = div.innerHTML +
     user+': '+msg+'<br>'  
 })
@@ -96,4 +94,17 @@ socket.on('join room res', function(data) {
 	if (data.err) alert('err')
 	var div = document.getElementById('operationalDiv');
 	div.innerHTML = div.innerHTML + data.res;
+})
+
+
+/*
+ * frontend
+ *
+ */
+
+$('#chat_msg').keydown(function (e){
+    if(e.keyCode == 13){
+     chat(document.getElementById('chat_msg').value)
+     $(this).val('')  
+   }
 })
