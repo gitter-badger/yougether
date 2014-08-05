@@ -16,30 +16,34 @@
 
 <div class = "wrapper">
 <div id="slim-header"></div>
-<div id = "header"><h5><b>yougether.io</b></h5></div>
+<!-- <div id = "header"><h5><b>yougether.io</b></h5></div> -->
 
 
-<div id="theater-background"> 
 <div class = "row nopadding">
+<div id="theater-background"> 
 
-<div class = col-md-9 "nopadding"> 
+<div class = "col-md-12 nopadding"> 
 <center> <div id="player"></div></center>
 </div>  
+</div>
 
-<div class="col-md-3 nopadding">
  <div id='chat'>
+<div class="col-md-1 nopadding">
   <div id ="chat-online">
   <b>online</b><br>
 {{userName}} (you)
 </div>
- <div id = "chat-text"></div>
- <input type="text"  id="chat_msg" placeholder="Press enter"> 
+</div>
+<div class="col-md-11 nopadding">
+ <div id = "chat-text"><b>welcome to {{roomID}}</b><br></div>
+ <input class="fixed" type="text"  id="chat_msg" placeholder="Press enter"> 
+</div>
+</div>
+</div>
+</div> <!-- row -->
+</div> <!-- theater -->
 
-</div>
-</div>
-</div>
-</div>
-</div>
+</div> <!-- wrapper -->
 
   </body>
   <script src="https://cdn.socket.io/socket.io-1.0.4.js"></script>
