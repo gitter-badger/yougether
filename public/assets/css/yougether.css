@@ -34,7 +34,6 @@ body {
 
 #chat {
   padding-left: 30px;
-  height: 100%;
 }
 
 #chat-online {
@@ -44,8 +43,8 @@ body {
 #chat-text {
   color: #666666;
   padding-bottom: 30px;
+  height: 100px;
   overflow: hidden;
-  height: 7em;
 }
 
 input#chat_msg {

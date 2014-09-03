@@ -63,14 +63,20 @@ function chat(msg) {
   var div = document.getElementById('chat-text')
   div.innerHTML = div.innerHTML +
     user+': '+msg+'<br>'
+  scroll()
 }
 
 socket.on('chat', function(user, msg){
   var div = document.getElementById('chat-text')
   div.innerHTML = div.innerHTML +
     user+': '+msg+'<br>'  
+  scroll()
 })
 
+function scroll() {
+  var el = document.getElementById("chat-text");
+  el.scrollTop = el.scrollHeight;
+}
 
 
 /*
