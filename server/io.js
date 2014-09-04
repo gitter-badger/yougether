@@ -35,6 +35,7 @@ io.on('connection', function(socket) {
     hotel.getPropertiesRoom(roomID, function(props) {
       if(props['state']!='new') {
         console.log('session has started, ask someone for sync')
+        //temporary solution: pause and restarts everyone
      }
     })
   })
@@ -78,7 +79,7 @@ io.on('connection', function(socket) {
 })
 
 
-//expose if a given room exists or not
+//exposes if a given room exists or not
 function existRoom(roomID, clbk) {
   hotel.listRooms(function(list) {
     clbk(_.has(list, roomID))

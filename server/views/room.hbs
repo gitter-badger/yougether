@@ -22,22 +22,20 @@
 <div class = "row nopadding">
 <div id="theater-background"> 
 
-<div class = "col-md-12 nopadding"> 
+<div class = "col-md-8 nopadding"> 
 <center> <div id="player"></div></center>
 </div>  
 </div>
 
- <div id='chat'>
-<!--
-<div class="col-md-1 nopadding">
+ <div class = 'col-md-4 nopadding'  id='chat'>
+
   <div id ="chat-online">
-  <b>online</b><br>
-{{userName}} (you)
-</div>
-</div>
--->
-<div class="col-md-11 nopadding">
- <div id = "chat-text"><b>welcome to {{roomID}}</b><br></div>
+  <b>welcome to {{roomID}}</b><br><br>
+  <b>online now</b><br>
+    {{userName}} (you)
+  </div>
+
+ <div id = "chat-text"></div>
  <input class="fixed" type="text"  id="chat_msg" placeholder="Press enter"> 
 </div>
 </div>

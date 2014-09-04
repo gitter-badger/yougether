@@ -47,7 +47,7 @@ socket.on('state', function(state, time) {
     player.pauseVideo()
   }
   else if(state == 'STOP') {
-    player.stopVide()
+    player.stopVideo()
   }
 })
 
@@ -114,3 +114,5 @@ $('#chat_msg').keydown(function (e){
      $(this).val('')  
    }
 })
+
+document.getElementById('chat-text').style.height = window.screen.availHeight*.50+'px'
