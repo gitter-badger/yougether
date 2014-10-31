@@ -5,7 +5,10 @@ utils             = require('../lib/utils.js'),
 youtubeValidator  = require('youtube-validator'),
 Hotel             = require('socket.io-hotel')
 
+//SyncManager       = require('../sync_manager.js')
+
 var hotel = new Hotel(io.sockets.adapter)
+
 
 io.on('connection', function(socket) {
 
@@ -35,10 +38,24 @@ io.on('connection', function(socket) {
     hotel.getPropertiesRoom(roomID, function(props) {
       if(props['state']!='new') {
         console.log('session has started, ask someone for sync')
-        //temporary solution: pause and restarts everyone
+        
+/* --> not do it here!
+
+        //get number of user in room
+        var opts = {nr_res = nr_users}
+        var strategy = new Strategy(opts)
+        var consensus = new Consensus(strategy)
+        
+        consensus.init()
+
+        socket.in(roomID).emit('currentTime')   
+ 
+*/         
+        
      }
     })
   })
+
   socket.on('leave room', function(roomID) {
     socket.leave(roomID) 
   })
@@ -74,8 +91,6 @@ io.on('connection', function(socket) {
     socket.in(roomID).emit('chat', user, msg)  
 })    
 
-
-
 })
 
 
@@ -99,6 +114,6 @@ function nrUsers(roomID, clbk) {
 }
 
 exports.nrUsers           = nrUsers
-exports.getPropertiesRoom = getPropertiesRoom,
+exports.getPropertiesRoom = getPropertiesRoom
 exports.existRoom         = existRoom
 exports.io                = io

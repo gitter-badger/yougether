@@ -103,6 +103,17 @@ socket.on('join room res', function(data) {
 })
 
 
+
+socket.on('sync', function() {
+  console.log('emit received')
+  socket.emit('sync', roomID, player.getCurrentTime())
+})
+
+socket.on('sync2', function(curr_time) {
+  console.log(curr_time)
+})
+
+
 /*
  * frontend
  *

@@ -19,7 +19,7 @@ app.get('/watch/:roomID', function(req, res){
   rooms.existRoom(roomID, function(exists) {
     if(exists) {
       rooms.nrUsers(roomID, function(nrUsers) {
-        if (nrUsers>2) {
+        if (nrUsers>5) {
           res.render('room_err',{msg:'the room is full'})
           return
         }
