@@ -3,82 +3,63 @@ io                = require('socket.io')(http),
  _                = require('underscore'),
 utils             = require('../lib/utils.js'),
 youtubeValidator  = require('youtube-validator'),
-Hotel             = require('socket.io-hotel')
+warehouse         = require('./warehouse/warehouse.js')
 
-//SyncManager       = require('../sync_manager.js')
 
-var hotel = new Hotel(io.sockets.adapter)
-
+exports.io  = io
 
 io.on('connection', function(socket) {
-
- /*
-  * operational
-  *
-  */
-
-   socket.on('create room', function(url) {
+  socket.on('create room', function(url) {
     youtubeValidator.validateUrl(url, function(res, err) {
       if(err) {
         socket.emit('create room res', null) 
         return
       } 
       var roomID = socket.id //room takes the id of its creator     
-      socket.emit('create room res', socket.id)
-      hotel.setPropertyRoom(roomID, 'currentUrl', url, function(){})
-      hotel.setPropertyRoom(roomID, 'state', 'new', function(){})
+      warehouse.initRoom(roomID, url, function(res) {
+        if(res) socket.emit('create room res', socket.id)
+      })
     })
   })
 
   socket.on('join room', function(roomID) {
     console.log(socket.id+' joining '+ roomID)
     socket.join(roomID)
-
-    //check if video has already started
-    hotel.getPropertiesRoom(roomID, function(props) {
-      if(props['state']!='new') {
-        console.log('session has started, ask someone for sync')
-        
-/* --> not do it here!
-
-        //get number of user in room
-        var opts = {nr_res = nr_users}
-        var strategy = new Strategy(opts)
-        var consensus = new Consensus(strategy)
-        
-        consensus.init()
-
-        socket.in(roomID).emit('currentTime')   
- 
-*/         
-        
-     }
+    warehouse.joinRoom(roomID, socket.id, function(res){
+      if(res.time != 0) {
+       socket.emit('start on', res.time) 
+      }
     })
   })
 
   socket.on('leave room', function(roomID) {
-    socket.leave(roomID) 
-  })
-  socket.on('disconnect', function() {
-    console.log('user '+socket.id+' disconnected')
-  })
-  socket.on('info', function() {
-    hotel.listRooms(console.log)
+    warehouse.leaveRoom(roomID, function(res) {
+      socket.leave(roomID) 
+      if(res == 0) console.log('room empty and destroyed'))
+    })
   })
 
+  socket.on('disconnect', function() {
+    warehouse.userDisconnect(socket.id, function(res) {
+      if(res == 0) {
+        console.log('user '+socket.id+' disconnected and room empty')
+      } else {
+        console.log('user '+socket.id+' disconnected')
+      }
+    })
+  })
+ 
  /*
   * protocol
   *
   */
  
   socket.on('state', function(state, roomID, time) {
-    console.log(roomID + ': '+state) 
-    hotel.getPropertiesRoom(roomID, function(props){
-      if(props['state']!=state) {
-        hotel.setPropertyRoom(roomID, 'state', state, function() {
-          socket.in(roomID).emit('state', state, time)
-        })
-      }
+    warehouse.currentState(roomID, state, function(curr_state) {
+      if(curr_state != state) { 
+        console.log(roomID + ': '+state) 
+        socket.in(roomID).emit('state', state, time)
+      }      
     })
   }) 
 
@@ -89,31 +70,9 @@ io.on('connection', function(socket) {
   
   socket.on('chat', function(roomID, user, msg) {
     socket.in(roomID).emit('chat', user, msg)  
-})    
+  })    
 
 })
 
 
-//exposes if a given room exists or not
-function existRoom(roomID, clbk) {
-  hotel.listRooms(function(list) {
-    clbk(_.has(list, roomID))
-  })
-}
 
-function getPropertiesRoom(roomID, clbk) {
-  hotel.getPropertiesRoom(roomID, function(props) {
-    clbk(props)
-  })
-}
-
-function nrUsers(roomID, clbk) {
-  hotel.getUsersRoom(roomID, function(users){
-    clbk(_.keys(users).length)
-  })
-}
-
-exports.nrUsers           = nrUsers
-exports.getPropertiesRoom = getPropertiesRoom
-exports.existRoom         = existRoom
-exports.io                = io

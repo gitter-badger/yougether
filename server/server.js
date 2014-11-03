@@ -4,13 +4,12 @@ _ 			    = require('underscore'),
 rooms       = require('./io.js'),
 utils		    = require('../lib/utils.js')
 
+
+exports.express = express
+exports.endpoint = app
+
 app.get('/', function(req, res) {
   res.sendfile('public/index.html')
-})
-
-app.get('/test', function(req, res) {
-    res.sendfile('public/test.html')
-    
 })
 
 app.get('/watch/:roomID', function(req, res){
@@ -41,5 +40,3 @@ app.get('/watch/:roomID', function(req, res){
 })
 
 
-exports.express = express
-exports.endpoint = app
