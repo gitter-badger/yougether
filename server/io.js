@@ -3,7 +3,7 @@ io                = require('socket.io')(http),
  _                = require('underscore'),
 utils             = require('../lib/utils.js'),
 youtubeValidator  = require('youtube-validator'),
-warehouse         = require('./warehouse/warehouse.js')
+warehouse         = require('./warehouse')
 
 
 exports.io  = io

@@ -18,6 +18,7 @@ app.get('/', function(req, res) {
 app.get('/watch/:roomID', function(req, res){
 	var roomID = req.params.roomID
 
+  
   warehouse.getRoom(roomID, function(res) {
     if(res) {
       if(res.users.length == MAX_USR_ROOM) {
@@ -35,6 +36,31 @@ app.get('/watch/:roomID', function(req, res){
     } else {
       res.render('room_err', {msg:'room doesnt exist'})
     }
+  
+  })
+
+
+ 
+  warehouse.existRoom(roomID, function(res) {
+    if(res) {
+      if (res.nr > MAX_USR_ROOM) {
+      }
+    }
+  })
+
+  var userName = 'user'+Math.round(Math.random()*(50-0))
+  warehouse.getRoom(roomID, function(props) {
+    res.render('room', {
+    userName: userName,
+    roomID: roomID,
+    videoUrl: props['currentUrl']
+      })
+      })
+    return
+
+  } else {
+      res.render('room_err', {msg: 'the room does not exist'})
+      }	
   })
 })
 
