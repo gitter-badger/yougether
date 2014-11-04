@@ -21,7 +21,7 @@
     "tape": "^2.13.4"
   },
   "scripts": {
-    "test": "nodejs tests/tape_all.js"
+    "test": "nodejs tests/tap_all.js"
   },
   "repository": {
     "type": "git",

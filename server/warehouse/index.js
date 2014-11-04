@@ -1,5 +1,6 @@
-var ConsensusManager  = require('consensus-manager'),
-ConsensusStrategy     = require('./strategy.js'),
+var rooms         = require('./room_manager.js')
+ConsensusStrategy = require('./strategy.js'),
+ConsensusManager  = require('consensus-manager'),
 
 
 exports.initRoom        = initRoom
@@ -7,19 +8,6 @@ exports.joinRoom        = joinRoom
 exports.leveRoom        = leaveRoom
 exports.userDisconnect  = userDisconnect
 exports.currentState    = currentState
-
-/*
-rooms = {
-  room_id: 
-    { users:[socketID_1, socketID_2...], 
-      currUrl="" 
-    },
-  ....
-  }
-
-*/
-var rooms = {}
-
 
 var str_opts = {}
 var str = new ConsensusStrategy(opts)
