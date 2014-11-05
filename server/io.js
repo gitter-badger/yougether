@@ -55,7 +55,7 @@ io.on('connection', function(socket) {
   */
  
   socket.on('state', function(state, roomID, time) {
-    warehouse.currentState(roomID, state, function(curr_state) {
+    warehouse.updateState(roomID, state, function(curr_state) {
       if(curr_state != state) { 
         console.log(roomID + ': '+state) 
         socket.in(roomID).emit('state', state, time)
