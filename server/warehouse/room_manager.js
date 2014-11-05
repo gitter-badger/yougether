@@ -1,11 +1,11 @@
 var _ = require('underscore')
 
 
-//rooms = { room_id: {users:[socketID_1, socketID_2...], currUrl="" },..}
 var rooms = {}
 
 var newRoom = function(roomID, url, cb) {
-  this.rooms[roomID] = {'users':[roomID],'currURL':url}
+  var state = 'new'
+  this.rooms[roomID] = {'users':[roomID],'currURL':url,'state':state}
   cb()
 }
 
@@ -13,14 +13,17 @@ var getRoom = function(roomID, cb) {
   cb(this.rooms[roomID])
 }
 
-var updateRoom = function(roomID, opts) {
+var updateRoom = function(roomID, opts, cb) {
+  var context = this
   _.keys(opts).forEach(function(k) {
-    this.rooms[roomID][k] = opts[k]
+    context.rooms[roomID][k] = opts[k]
   })
+  cb()
 }
 
-var addUser = function(roomID, user) {
-  this.rooms[roomID][users].push(user)
+var addUser = function(roomID, user, cb) {
+  this.rooms[roomID]['users'].push(user)
+  cb()
 }
 
 var removeUser = function(roomID, user, cb) {
@@ -34,11 +37,9 @@ var removeUser = function(roomID, user, cb) {
   cb(this.rooms[roomID])
 }
 
-
 exports.rooms       = rooms
 exports.newRoom     = newRoom
 exports.getRoom     = getRoom
 exports.updateRoom  = updateRoom
 exports.addUser     = addUser
 exports.removeUser  = removeUser
-
