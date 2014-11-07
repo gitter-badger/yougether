@@ -5,19 +5,18 @@ ConsensusManager  = require('consensus-manager'),
 
 var str_opts = {}
 var str = new ConsensusStrategy(opts)
-var consensus = ConsensusManager(str)
 
 var initRoom = function(roomID, url, cb) {
-  rooms.newRoom(roomID, url, function() {
+  var consensus = new ConsensusManager(str)
+  rooms.newRoom(roomID, url, consensus, function() {
     cb()  
   }) 
 }
 
 var joinRoom = function(roomID, sock, cb) {
-  var res = {'url':'', 'time':''}
-  //if session has started, send url and time
-  //if not, time ==  0
-  cb(res)
+  rooms.addUser(roomID, userID, function(state) {
+    cb({'res': state})
+  })
 }
 
 var leaveRoom = function(roomID, userID, cb) {
@@ -41,8 +40,24 @@ var updateState = function(roomID, state, cb) {
   })
 }
 
+var startConsensus = function(socket, roomID, cb) {
+  rooms.getRoom(roomID, function(res) {
+    socket.consensus['nr_res'] = res['users'].length
+    socket.consensus['times'] = []
+    cb()
+  }
+}
+
+var consensus = function(socket, res, cb) {
+  if(socket.consensus['nr_res']-- == 1) {
+    var time = Math.max.apply(Math, socket.consensus['times']);
+    cb(state, time)    
+  }
+}
+
 exports.initRoom        = initRoom
 exports.joinRoom        = joinRoom
 exports.leveRoom        = leaveRoom
 exports.userDisconnect  = userDisconnect
 exports.currentState    = currentState
+exports.startConsensus  = startConsensus

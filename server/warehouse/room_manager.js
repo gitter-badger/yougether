@@ -3,9 +3,9 @@ var _ = require('underscore')
 
 var rooms = {}
 
-var newRoom = function(roomID, url, cb) {
+var newRoom = function(roomID, url, consensus, cb) {
   var state = 'new'
-  this.rooms[roomID] = {'users':[roomID],'currURL':url,'state':state}
+  this.rooms[roomID] = {'users':[roomID],'currURL':url,'state':state,'consensus':consensus}
   cb()
 }
 
@@ -23,7 +23,7 @@ var updateRoom = function(roomID, opts, cb) {
 
 var addUser = function(roomID, user, cb) {
   this.rooms[roomID]['users'].push(user)
-  cb()
+  cb(this.rooms[roomID]['state'])
 }
 
 var removeUser = function(roomID, user, cb) {

@@ -24,10 +24,26 @@ io.on('connection', function(socket) {
 
   socket.on('join room', function(roomID) {
     console.log(socket.id+' joining '+ roomID)
-    socket.join(roomID)
-    warehouse.joinRoom(roomID, socket.id, function(res){
-      if(res.time != 0) {
-       socket.emit('start on', res.time) 
+    warehouse.joinRoom(roomID, socket.id, function(res) {
+      if(res) {
+        socket.join(roomID)
+        if(res.state == 'new') {
+          socket.emit('join room', roomID, res.url)
+        } else warehouse.startConsensus(socket, roomID, function() {
+            socket.emit('in consensus')
+            socket.in(roomID).emit('consensus')
+          }) 
+      } else {
+        //room does not exist (does no happen)
+          socket.emit('no room', roomID)
+      }
+    })
+  })
+
+  socket.on('consensus res', function(res) {
+    warehouse.consensus(socket, roomID, res, function(consensus){
+      if(consensus) {
+        socket.emit('play on' consensus.state, consensus.time)
       }
     })
   })
