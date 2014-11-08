@@ -39,6 +39,10 @@ function onPlayerStateChange(event) {
  */
 
 socket.on('state', function(state, time) {
+  processState(state, time) 
+})
+
+var changeState = function(state, time) {
   if(state == 'PLAY') {
     player.playVideo()
   } 
@@ -49,7 +53,7 @@ socket.on('state', function(state, time) {
   else if(state == 'STOP') {
     player.stopVideo()
   }
-})
+}
 
 
 /*
@@ -103,14 +107,12 @@ socket.on('join room res', function(data) {
 })
 
 
-
-socket.on('sync', function() {
-  console.log('emit received')
-  socket.emit('sync', roomID, player.getCurrentTime())
+//consensus
+socket.on('in consensus', function() {
+  console.log('wait a bit, syncronizing...')
 })
-
-socket.on('sync2', function(curr_time) {
-  console.log(curr_time)
+socket.on('play on', function(state, time) {
+  processState(state, time) 
 })
 
 

@@ -14,7 +14,7 @@ io.on('connection', function(socket) {
       if(err) {
         socket.emit('create room res', null) 
         return
-      } 
+      }
       var roomID = socket.id //room takes the id of its creator     
       warehouse.initRoom(roomID, url, function(res) {
         if(res) socket.emit('create room res', socket.id)
@@ -43,7 +43,7 @@ io.on('connection', function(socket) {
   socket.on('consensus res', function(res) {
     warehouse.consensus(socket, roomID, res, function(consensus){
       if(consensus) {
-        socket.emit('play on' consensus.state, consensus.time)
+        socket.emit('play on', consensus.state, consensus.time)
       }
     })
   })
@@ -51,7 +51,7 @@ io.on('connection', function(socket) {
   socket.on('leave room', function(roomID) {
     warehouse.leaveRoom(roomID, function(res) {
       socket.leave(roomID) 
-      if(res == 0) console.log('room empty and destroyed'))
+      if(res == 0) console.log('room empty and destroyed')
     })
   })
 

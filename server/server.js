@@ -18,9 +18,9 @@ app.get('/', function(req, res) {
 app.get('/watch/:roomID', function(req, res){
 	var roomID = req.params.roomID
 
-  warehouse.getRoom(roomID, function(res) {
-    if(res) {
-      if(res.users.length == MAX_USR_ROOM) {
+  warehouse.roomExists(roomID, function(res_room) {
+    if(res_room) {
+      if(res_room.nr_users == MAX_USR_ROOM) {
         res.render('room_err',{msg:'the room is full'})
         return   
       } else {

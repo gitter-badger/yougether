@@ -3,10 +3,11 @@ var _ = require('underscore')
 
 var rooms = {}
 
-var newRoom = function(roomID, url, consensus, cb) {
+var newRoom = function(roomID, url,  cb) {
   var state = 'new'
-  this.rooms[roomID] = {'users':[roomID],'currURL':url,'state':state,'consensus':consensus}
-  cb()
+  this.rooms[roomID] = {'users':[roomID],'currURL':url,'state':state}
+  console.log(rooms)
+  cb(this.rooms[roomID])
 }
 
 var getRoom = function(roomID, cb) {
