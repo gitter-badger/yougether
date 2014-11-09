@@ -3,6 +3,8 @@ var states = ['end','play','pause','buffer','cue']; //-1 == 'unstarted'
 
 function initPlayer(videoUrl) {
   currentVideoID = videoUrl.split('?v=')[1]
+  console.log('url: '+videoUrl)
+  console.log('videoID: '+currentVideoID)
   var tag = document.createElement('script');
 	tag.src = "https://www.youtube.com/iframe_api";
 	var firstScriptTag = document.getElementsByTagName('script')[0];

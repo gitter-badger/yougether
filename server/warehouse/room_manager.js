@@ -6,7 +6,6 @@ var rooms = {}
 var newRoom = function(roomID, url,  cb) {
   var state = 'new'
   this.rooms[roomID] = {'users':[roomID],'currURL':url,'state':state}
-  console.log(rooms)
   cb(this.rooms[roomID])
 }
 
@@ -24,7 +23,7 @@ var updateRoom = function(roomID, opts, cb) {
 
 var addUser = function(roomID, user, cb) {
   this.rooms[roomID]['users'].push(user)
-  cb(this.rooms[roomID]['state'])
+  cb(this.rooms[roomID])
 }
 
 var removeUser = function(roomID, user, cb) {

@@ -8,8 +8,8 @@ var initRoom = function(roomID, url, cb) {
 }
 
 var joinRoom = function(roomID, sock, cb) {
-  rooms.addUser(roomID, sock.id, function(state) {
-    cb({'res': state})
+  rooms.addUser(roomID, sock.id, function(room) {
+    cb(room)
   })
 }
 
@@ -33,7 +33,7 @@ var userDisconnect = function(user_socket, cb) {
 }
 
 var updateState = function(roomID, state, cb) {
-  room.getRoom(roomID, function(res){
+  rooms.getRoom(roomID, function(res){
     if(res['state'] != state) {
       var opts = {'state': state}
       rooms.updateRoom(roomID, opts, function() {
@@ -63,5 +63,6 @@ exports.joinRoom        = joinRoom
 exports.leveRoom        = leaveRoom
 exports.roomExists      = roomExists
 exports.userDisconnect  = userDisconnect
+exports.updateState     = updateState
 //exports.currentState  = currentState
 exports.startConsensus  = startConsensus

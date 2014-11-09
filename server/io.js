@@ -26,9 +26,10 @@ io.on('connection', function(socket) {
     console.log(socket.id+' joining '+ roomID)
     warehouse.joinRoom(roomID, socket.id, function(res) {
       if(res) {
+        console.log(res)
         socket.join(roomID)
         if(res.state == 'new') {
-          socket.emit('join room', roomID, res.url)
+          socket.emit('join room', roomID, res.currURL)
         } else warehouse.startConsensus(socket, roomID, function() {
             socket.emit('in consensus')
             socket.in(roomID).emit('consensus')

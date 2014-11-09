@@ -19,6 +19,7 @@ app.get('/watch/:roomID', function(req, res){
 	var roomID = req.params.roomID
 
   warehouse.roomExists(roomID, function(res_room) {
+    console.log(res_room)
     if(res_room) {
       if(res_room.nr_users == MAX_USR_ROOM) {
         res.render('room_err',{msg:'the room is full'})
@@ -28,7 +29,7 @@ app.get('/watch/:roomID', function(req, res){
         res.render('room', {
           userName: userName,
           roomID: roomID,
-          videoUrl: res.currUrl
+          videoUrl: res_room.currURL
         })
         return  
       }
