@@ -18,7 +18,7 @@ app.get('/', function(req, res) {
 app.get('/watch/:roomID', function(req, res){
 	var roomID = req.params.roomID
 
-  warehouse.roomExists(roomID, function(res_room) {
+  warehouse.getRoom(roomID, function(res_room) {
     console.log(res_room)
     if(res_room) {
       if(res_room.nr_users == MAX_USR_ROOM) {

@@ -36,9 +36,9 @@ var updateState = function(roomID, state, cb) {
     if(res['state'] != state) {
       var opts = {'state': state}
       rooms.updateRoom(roomID, opts, function() {
-        cb(true) 
+        cb(state) 
       }) 
-    } else cb(false)
+    } else cb(state)
   })
 }
 
@@ -56,9 +56,9 @@ var consensus = function(socket, roomID,  res, cb) {
     var time = Math.max.apply(Math, socket.consensus['times']);
     rooms.getRoom(roomID, function(res_room) {
       var res = {'state':res_room.state, 'time':time}
-      cb(res)    
+      cb(res_room.state, time)    
     })
-  } else cb()
+  }
 }
 
 exports.initRoom        = initRoom

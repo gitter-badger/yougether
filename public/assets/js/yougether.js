@@ -41,10 +41,11 @@ function onPlayerStateChange(event) {
  */
 
 socket.on('state', function(state, time) {
+  console.log('received '+state +': '+time)
   processState(state, time) 
 })
 
-var changeState = function(state, time) {
+var processState = function(state, time) {
   if(state == 'PLAY') {
     player.playVideo()
   } 
@@ -56,6 +57,14 @@ var changeState = function(state, time) {
     player.stopVideo()
   }
 }
+
+//consensus
+socket.on('in consensus', function() {
+  console.log('wait a bit, syncronizing...')
+})
+socket.on('play on', function(state, time) {
+  processState(state, time) 
+})
 
 
 /*
@@ -106,15 +115,6 @@ socket.on('join room res', function(data) {
 	if (data.err) alert('err')
 	var div = document.getElementById('operationalDiv');
 	div.innerHTML = div.innerHTML + data.res;
-})
-
-
-//consensus
-socket.on('in consensus', function() {
-  console.log('wait a bit, syncronizing...')
-})
-socket.on('play on', function(state, time) {
-  processState(state, time) 
 })
 
 
