@@ -12,8 +12,8 @@ io.on('connection', function(socket) {
   socket.on('create room', function(url) {
     youtubeValidator.validateUrl(url, function(res, err) {
       if(err) {
-        socket.emit('create room res', null) 
-        return
+       // socket.emit('create room res', null) 
+       // return
       }
       var roomID = socket.id //room takes the id of its creator     
       warehouse.initRoom(roomID, url, function(res) {
@@ -42,6 +42,7 @@ io.on('connection', function(socket) {
   })
 
   socket.on('consensus res', function(res) {
+    console.log(socket.id+ 'consensus res: '+res)
     warehouse.consensus(socket, roomID, res, function(consensus){
       if(consensus) {
         socket.emit('play on', consensus.state, consensus.time)
